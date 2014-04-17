@@ -23,6 +23,7 @@
 char byte;
 char result;
 
+/* static values are placeholders until loading from file is implemented */
 unsigned long public_key = 271;		/* e */
 unsigned long private_key = 79;		/* d */
 unsigned long divisor = 323;		/* n */
