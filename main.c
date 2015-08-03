@@ -20,13 +20,15 @@
 #include <math.h>
 #include <string.h>
 
-char byte;
-char result;
+unsigned char cypher(unsigned char input, int key);
+
+char input;
+unsigned char result;
 
 /* static values are placeholders until loading from file is implemented */
-unsigned long public_key = 271;		/* e */
-unsigned long private_key = 79;		/* d */
-unsigned long divisor = 323;		/* n */
+unsigned long public_key = 59;		/* e */
+unsigned long private_key = 179;	/* d */
+unsigned long divisor = 221;	   	/* n */
 
 FILE *target;
 
@@ -36,20 +38,31 @@ int main(int argc, char *argv[]) {
 	if (argc > 1 && strcmp(argv[1], "-e") == 0)  {
 		target = fopen("encrypted", "w");
 
-		while ((byte = getchar()) != EOF) {
-			result = (unsigned long)pow(byte, public_key) % divisor;
-			printf("result int: %d, result char: %c\n", result, result);
+		while ((input = getchar()) != EOF) {
+			result = cypher(input, public_key);
+			printf("result #: %d, result: %c\n", result, result+0);
 
+			putchar(result);
 			fprintf(target, "%c", result);
 		}
 	}
 	else {
 		target = fopen("decrypted", "w");
 
-		while ((byte = getchar()) != EOF) {
-			result = (unsigned long)pow(byte, private_key) % divisor;
+		while ((input = getchar()) != EOF) {
+			result = cypher(input, private_key);
+
+			putchar(result);
 			fprintf(target, "%c", result);
 		}
 	}
-	return 1;
+	return 0;
+}
+
+unsigned char cypher(unsigned char input, int key) {
+	unsigned char result;
+	if (key == 1) {
+		return input;
+	}
+	return (input * cypher(input, key-1)) % divisor;
 }
