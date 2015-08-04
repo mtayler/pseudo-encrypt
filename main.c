@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
 
 		while ((input = getchar()) != EOF) {
 			result = cypher(input, public_key);
-			printf("result #: %d, result: %c\n", result, result+0);
 
 			putchar(result);
 			fprintf(target, "%c", result);
@@ -56,6 +55,7 @@ int main(int argc, char *argv[]) {
 			fprintf(target, "%c", result);
 		}
 	}
+	putchar('\n');
 	return 0;
 }
 
