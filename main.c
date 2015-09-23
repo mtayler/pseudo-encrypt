@@ -17,52 +17,75 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
-unsigned char cypher(unsigned char input, int key);
+#define E_OUTPUT "output.vir"
+#define D_OUTPUT "output.txt"
 
-char input;
-unsigned char result;
-
-/* static values are placeholders until loading from file is implemented */
-unsigned long public_key = 59;		/* e */
-unsigned long private_key = 179;	/* d */
-unsigned long divisor = 221;	   	/* n */
+unsigned int cypher(int, unsigned long, unsigned long*);
+int load_keys(unsigned long*, unsigned long*, unsigned long*);
 
 FILE *target;
+FILE *keys;
 
 int main(int argc, char *argv[]) {
+	int input;
+	int result;
+
+	unsigned long public_key = 0;		/* e */
+	unsigned long private_key = 0;		/* d */
+	unsigned long divisor = 0;	  	 	/* n */
+
+	if (load_keys(&public_key, &divisor, &private_key)) {
+		printf("Unable to load keys. Exiting with error 1");
+		exit(1);
+	}
 
 	/* If encrypting */
 	if (argc > 1 && strcmp(argv[1], "-e") == 0)  {
-		target = fopen("encrypted", "w");
+		target = fopen(E_OUTPUT, "w");
 
 		while ((input = getchar()) != EOF) {
-			result = cypher(input, public_key);
+			result = cypher(input, public_key, &divisor);
 
-			putchar(result);
-			fprintf(target, "%c", result);
+			fprintf(target, "%c", (char)result);
 		}
 	}
 	else {
-		target = fopen("decrypted", "w");
+		target = fopen(D_OUTPUT, "w");
 
 		while ((input = getchar()) != EOF) {
-			result = cypher(input, private_key);
+			result = cypher(input, private_key, &divisor);
 
-			putchar(result);
-			fprintf(target, "%c", result);
+			fprintf(target, "%c", (char)result);
 		}
 	}
-	putchar('\n');
 	return 0;
 }
 
-unsigned char cypher(unsigned char input, int key) {
-	unsigned char result;
+int load_keys(unsigned long *public_key, unsigned long *divisor, unsigned long *private_key) {
+	keys = fopen("keys", "r");
+
+	if (keys == NULL) {
+		return 1;
+	}
+
+	fscanf(keys, "%lu\n", public_key);
+	fscanf(keys, "%lu\n", divisor);
+	fscanf(keys, "%lu\n", private_key);
+
+	if (*public_key == 0 || *divisor == 0 || *private_key == 0) {
+		return 2;
+	}
+
+	return 0;
+}
+
+unsigned int cypher(int input, unsigned long key, unsigned long *divisor) {
 	if (key == 1) {
 		return input;
 	}
-	return (input * cypher(input, key-1)) % divisor;
+	return (input * cypher(input, key-1, divisor)) % *divisor;
 }
