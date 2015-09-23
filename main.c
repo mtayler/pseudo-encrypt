@@ -24,15 +24,15 @@
 #define E_OUTPUT "output.vir"
 #define D_OUTPUT "output.txt"
 
-unsigned int cypher(int, unsigned long, unsigned long*);
+unsigned long cypher(unsigned long, unsigned long, unsigned long*);
 int load_keys(unsigned long*, unsigned long*, unsigned long*);
 
 FILE *target;
 FILE *keys;
 
 int main(int argc, char *argv[]) {
-	int input;
-	int result;
+	unsigned long input;
+	unsigned long result;
 
 	unsigned long public_key = 0;		/* e */
 	unsigned long private_key = 0;		/* d */
@@ -50,13 +50,13 @@ int main(int argc, char *argv[]) {
 		while ((input = getchar()) != EOF) {
 			result = cypher(input, public_key, &divisor);
 
-			fprintf(target, "%c", (char)result);
+			fprintf(target, "%lu ", result);
 		}
 	}
 	else {
 		target = fopen(D_OUTPUT, "w");
 
-		while ((input = getchar()) != EOF) {
+		while (scanf("%lu", &input) == 1) {
 			result = cypher(input, private_key, &divisor);
 
 			fprintf(target, "%c", (char)result);
@@ -83,7 +83,9 @@ int load_keys(unsigned long *public_key, unsigned long *divisor, unsigned long *
 	return 0;
 }
 
-unsigned int cypher(int input, unsigned long key, unsigned long *divisor) {
+unsigned long cypher(unsigned long input, unsigned long key,
+		unsigned long *divisor) {
+
 	if (key == 1) {
 		return input;
 	}
