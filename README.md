@@ -17,9 +17,6 @@ Decrypted text is written to a file called `decrypted`.
 Encryption Keys
 ---------------
 
-To use different encryption keys: 
-
-1. Simply change the variables `private_key`, `public_key`, and `divisor`. See [this Wikipedia article on RSA key-generation](http://en.wikipedia.org/wiki/RSA_\(cryptosystem\)#Key_generation) to correctly generate keys.
-2. Run `make` to compile the program with the new keys.
+To use different encryption keys, change the entries in the file `keys`. The keys are ordered public_key, divisor, private_key: or e, n, d.
 
 A better key method to be added.
